@@ -10,5 +10,5 @@ intent_words = [
     # Instruct / Direct
     "guide", "instruct", "teach", "walk through", "step by step", "suggest",
     # Evaluate / Analyze
-    "analyze", "evaluate", "diagnose", "review", "assess", "compare", "check"
+    "analyze", "evaluate", "diagnose", "review", "assess", "compare", "check", "advice"
 ]

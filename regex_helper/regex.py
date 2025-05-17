@@ -175,7 +175,6 @@ def extract_format_words(text):
     }
 
 def process_prompt(sentence: str):
-    original = sentence
     cleaned_input = clean_prompt(sentence)
     normalized = normalize_slang(sentence, slang_dict)
     cleaned = clean_prompt(normalized)
@@ -188,5 +187,6 @@ def process_prompt(sentence: str):
         "prompt_type": ptype,
         "optimized_prompt": capitalized,
         "intent_words": extract_intent_words(cleaned_input)["intent_words"],
-        "format_words": extract_format_words(cleaned_input)["format_words"]
+        "format_words": extract_format_words(cleaned_input)["format_words"],
+        "original_prompt": capitalized
     }
