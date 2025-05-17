@@ -1,0 +1,94 @@
+nav .navbar-brand
+{
+    font-size: xx-large;
+}
+
+/* Colors for brand */
+nav .navbar-brand .blue
+{
+    color:#212431;
+    font-family: "Fredoka", sans-serif;
+    font-weight: bold;
+}
+
+/* For Index, Detect */
+.navbar-nav.me-auto.mt-2 {
+    /* Your styles here */
+    color:#ffffff;
+    font-weight: 500;
+    font-size: 20px;
+    height: 50px;
+    justify-content: center;
+    letter-spacing: normal;
+    line-height: 1.33;
+    outline: none;
+    position: relative;
+    text-decoration: none
+
+}
+
+/* Change text color for navbar links */
+.navbar-nav .nav-link {
+    color: #ffffff !important;  /* Ensure white text */
+}
+
+/* Change color on hover */
+.navbar-nav .nav-link:hover {
+    color: #f8f9fa !important; /* Light gray */
+}
+
+/* For headings */
+h2
+{
+    padding: 20px;
+    color: #212431;
+    font-family: "Fredoka", sans-serif;
+    font-weight: bold;
+    margin-top: -30px;
+}
+
+.logo {
+    padding-left: 25px;
+    margin-right: 5px; /* Add slight margin to separate */
+    max-height: 50px;
+    width: auto;
+}
+.textlogo {
+    padding-left: 0;
+    margin-left: 0;
+    max-height: 50px;
+    width: auto;
+    vertical-align: middle; /* Aligns better with the logo */
+}
+
+.image-container{
+    margin: 0;
+    width: 100%;
+    height: auto; 
+    overflow: hidden;
+    padding: 8px;
+}
+
+.image-container img {
+    display: block;
+    width: 100%;
+    height: auto;    
+    object-fit: contain; /* maintains aspect ratio */
+    margin: 0;
+    padding: 8px;
+}
+
+.h4{
+    font-family: 'Bahnschrift', sans-serif; 
+    font-weight: bold;
+    text-align: left; 
+}
+
+.para{
+    font-family: 'Bahnschrift', sans-serif; 
+    text-align: left;
+    font-size: 18px;
+}
+.table.table-bordered td {
+  text-align: left; /* Or center, right, justify */
+}

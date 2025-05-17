@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Info
+{% endblock %}
+
+{% block main %}
+    <h2 style="font-family: 'Bahnschrift', sans-serif; font-weight: bold;">About Our Prompt Optimiser</h2>
+    <h4 class="h4">Our vision</h4> 
+        <p class="para">The only difference between someone who gets better results from AI, from someone 
+        who doesn’t, is the quality of the prompt they provide. Crafting effective prompts 
+        remains a significant challenge despite the widespread adoption of large language models 
+        (LLMs) like Chat GPT and navigating through these models is hard, even for those who are 
+        experienced, and constantly iterating the prompts to get the desired results, is a huge waste 
+        of computational power.<br><br> A prompt optimizer is an invaluable tool which can clarify 
+        ambiguities, refine the structure, and add relevant context to a user’s input, this can 
+        empower users to achieve more impressive results from LLMs opposed to manual trial and error. 
+        To bridge this gap, we are going to build a prompt optimizer to enhance a user’s prompt, for 
+        better results from LLM’s.
+        </p> 
+    <br>
+    <h4 class="h4">How To Use</h4> 
+        <div class="image-container">
+            <img src="{{ url_for('static', path='touse.jpg') }}" alt="How to Use">
+        </div>
+    <br><br>
+    <h4 class="h4">Working Principle</h4> 
+        <div class="image-container">
+            <img src="{{ url_for('static', path='principle.jpg') }}" alt="Working Principle">
+        </div>
+    <br>
+    <h4 class="h4">How Does It Help?</h4> 
+    <p class="para">
+        <ul class="para">
+            <li>Saves time on prompt iteration/testing.</li>
+            <ul>
+                <li>By automatically refining prompts for clarity, structure, and relevance, 
+                it reduces the trial-and-error cycles required to achieve high-quality outputs.
+                </li>
+            </ul>
+            <br>
+            <li>Boosts AI adoption across non-tech teams</li>
+            <br>
+            <li>Provides less experienced users with desired results.</li>
+            <br>
+            <li>Simplifies the interaction with AI tools, enabling departments with non-technical teams.</li>
+            <br>
+            <li>Integrated into enterprise GPT wrappers.</li>
+            <ul>
+                <li>Acts as a middleware layer that dynamically refines prompts before submission, 
+                    improving performance and user satisfaction across AI-driven enterprise applications.
+                </li>
+            </ul>
+            <br>
+        </ul>
+            
+    </p>
+    <br>
+    <h4 class="h4">Our Business Model</h4><br>
+    <p class="para">
+        In a world that is rapidly inclining towards the use of AI, it is crucial 
+        to know how to get the results from it. A prompt optimiser makes AI more 
+        accessible to many industries and streamlines the results for all it’s user. 
+        It also allows for better usage of computational power.
+    </p>
+    <br>
+    <table class="table table-bordered">
+    <thead>
+        <tr>
+        <th scope="col">#</th>
+        <th scope="col">Component</th>
+        <th scope="col">Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+        <th scope="row">1</th>
+        <td>Value Proposition</td>
+        <td>Improve LLM output quality through smart prompt engineering tools</td>
+        </tr>
+        <tr>
+        <th scope="row">2</th>
+        <td>Revenue Streams</td>
+        <td>Subscriptions, API licensing, and consulting.</td>
+        </tr>
+        <tr>
+        <th scope="row">3</th>
+        <td>Scalability</td>
+        <td>As enterprise GPT Wrappers.</td>
+        </tr>
+    </tbody>
+</table>
+    
+    
+{% endblock %}
