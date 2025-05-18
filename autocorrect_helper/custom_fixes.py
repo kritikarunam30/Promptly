@@ -1,4 +1,9 @@
 CUSTOM_FIXES = {
+    "ai": "AI",
+    "Ai": "AI",
+    "AI": "AI",
+    "plz": "please",
+    "pls": "please",
     "world wal 2": "World War 2",
     "world war 2": "World War 2",
     "world war two": "World War 2",
@@ -6,6 +11,7 @@ CUSTOM_FIXES = {
     "world war 1": "World War 1",
     "world war one": "World War 1",
     "hallo": "hello",
+    "halo": "hello",
     "solv":"solve",
     "yo": "you",
     "abou": "about",

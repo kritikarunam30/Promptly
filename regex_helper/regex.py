@@ -188,5 +188,5 @@ def process_prompt(sentence: str):
         "optimized_prompt": capitalized,
         "intent_words": extract_intent_words(cleaned_input)["intent_words"],
         "format_words": extract_format_words(cleaned_input)["format_words"],
-        "original_prompt": capitalized
+        "original_prompt": cleaned_input
     }

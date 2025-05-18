@@ -8,7 +8,7 @@ intent_words = [
     # Convert / Transform
     "convert", "translate", "transform", "rephrase", "modify",
     # Instruct / Direct
-    "guide", "instruct", "teach", "walk through", "step by step", "suggest",
+    "guide", "instruct", "teach", "walk through", "step by step", "suggest", "difference", "diffrentiate",
     # Evaluate / Analyze
     "analyze", "evaluate", "diagnose", "review", "assess", "compare", "check", "advice"
 ]

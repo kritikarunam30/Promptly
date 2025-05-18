@@ -7,6 +7,7 @@ from regex_helper.regex import process_prompt
 from kb_helper.kb_helper import enhance_prompt
 from result_helper.result import get_result
 from assembly_helper.assembly_nlp import assemble_nlp_text
+from nlp_helper.nlp_enhancer import nlp_enhancer
 
 app = FastAPI()
 # Point to the templates 
@@ -29,13 +30,14 @@ async def handle_form(request: Request, initial_prompt: str = Form(...)):
     autocorrect_prompt = autocorrect_nlp_text(initial_prompt)
     regex_prompt = process_prompt(autocorrect_prompt)
     kbtemplate_prompt = enhance_prompt(regex_prompt) # return string
-    nlp_enhanced_prompt = ...
-    nlp_assembled_prompt = assemble_nlp_text(kbtemplate_prompt)
+    nlp_enhanced_prompt = nlp_enhancer(kbtemplate_prompt, regex_prompt)
+    nlp_assembled_prompt = assemble_nlp_text(nlp_enhanced_prompt)
     prompt_current = nlp_assembled_prompt
     final_optimised_prompt = {"Optimized Prompt": nlp_assembled_prompt,
                               "Autocorrected Prompt": autocorrect_prompt,
                               "Rule Based Logic": regex_prompt, 
                               "Knowledge-Base Template Matching": kbtemplate_prompt,
+                              "NLP Enhancer Prompt" : nlp_enhanced_prompt,
                               "NLP Assembled Prompt": nlp_assembled_prompt                                                           
                             }
     
