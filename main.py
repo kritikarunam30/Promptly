@@ -6,7 +6,7 @@ from autocorrect_helper.autocorrect_nlp import autocorrect_nlp_text
 from regex_helper.regex import process_prompt
 from kb_helper.kb_helper import enhance_prompt
 from result_helper.result import get_result
-from assembly_helper import assemble_prompt
+from assembly_helper.assembly_nlp import assemble_nlp_text
 
 app = FastAPI()
 # Point to the templates 
@@ -20,7 +20,7 @@ prompt_current = ""
 async def index(request: Request):
     return templates.TemplateResponse("index.html",{
         "request": request,
-        "final_optimised_prompt": None
+        "final_optimised_prompt": {}
         })
 
 @app.post("/", response_class=HTMLResponse)
@@ -30,10 +30,15 @@ async def handle_form(request: Request, initial_prompt: str = Form(...)):
     regex_prompt = process_prompt(autocorrect_prompt)
     kbtemplate_prompt = enhance_prompt(regex_prompt) # return string
     nlp_enhanced_prompt = ...
-    nlp_assembled_prompt = ...
+    nlp_assembled_prompt = assemble_nlp_text(kbtemplate_prompt)
+    prompt_current = nlp_assembled_prompt
+    final_optimised_prompt = {"Optimized Prompt": nlp_assembled_prompt,
+                              "Autocorrected Prompt": autocorrect_prompt,
+                              "Rule Based Logic": regex_prompt, 
+                              "Knowledge-Base Template Matching": kbtemplate_prompt,
+                              "NLP Assembled Prompt": nlp_assembled_prompt                                                           
+                            }
     
-    final_optimised_prompt = f"Optimized:, Autocorrect: {autocorrect_prompt},regex_prompt: {regex_prompt}, kbtemplate_prompt: {kbtemplate_prompt}"
-    prompt_current = kbtemplate_prompt
     return templates.TemplateResponse("index.html", {
         "request": request,
         "final_optimised_prompt": final_optimised_prompt
@@ -46,3 +51,7 @@ async def display_results(request: Request):
         "request": request,
         "final_results": result
     })
+
+@app.get("/info", response_class=HTMLResponse)
+async def info(request: Request):
+    return templates.TemplateResponse("info.html",{"request": request})

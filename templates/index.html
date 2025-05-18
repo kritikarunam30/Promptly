@@ -7,7 +7,7 @@
 {% block main %}
     <h2 style="font-family: 'Bahnschrift', sans-serif; font-weight: bold;"> Promptly : A Prompt Optimizer</h2>
     <h4></h4> 
-    {% if final_optimised_prompt is none %}
+    {% if not final_optimised_prompt %}
         <form method="post">
             <div class="card">
                 <div class="card-header">
@@ -30,14 +30,23 @@
                 <h4 style="font-family: 'Bahnschrift', sans-serif; font-weight: bold;">Here is your optimised Prompt</h4>
             </div>
             <div class="card-body">
-                <p class="card-text">{{ final_optimised_prompt }}</p>
+                <p class="card-text">
+                    {% for key,value in final_optimised_prompt.items() %}
+                        {% if key == "Optimized Prompt" %}
+                            <ul class="para">
+                                <li>{{ key }} : {{ value }}</li>
+                            </ul>     
+                        {% else %}  
+                            <ul style="text-align: left;">
+                                <li>{{ key }} : {{ value }}</li>
+                            </ul> 
+                        {% endif %}
+                    {% endfor %}
+                </p>
                 <a href="/result" class="btn btn-primary">Get Result</a>
             </div>
         </div>   
-    {% endif %}
- 
-
-    <div class="page-break"></div>        
+    {% endif %}      
     
     
 {% endblock %}

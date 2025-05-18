@@ -1,5 +1,3 @@
-# custom_fixes.py
-
 CUSTOM_FIXES = {
     "world wal 2": "World War 2",
     "world war 2": "World War 2",

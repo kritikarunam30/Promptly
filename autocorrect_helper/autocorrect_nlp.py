@@ -1,5 +1,5 @@
 import os
-from symspellpy.symspellpy import SymSpell, Verbosity
+from symspellpy.symspellpy import SymSpell
 from spellchecker import SpellChecker
 from autocorrect_helper.custom_fixes import CUSTOM_FIXES
 
