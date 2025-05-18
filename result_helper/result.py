@@ -1,7 +1,7 @@
 import requests
 
 def get_result(user_prompt):
-    API_KEY = "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"
+    API_KEY = "# Enter API KEY"
     headers = {
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"

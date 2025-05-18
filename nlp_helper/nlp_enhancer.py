@@ -1,8 +1,6 @@
-import re
 import nltk
 import language_tool_python
 from nltk.corpus import wordnet as wn
-from kb_helper.kb_helper import FORMAT_SUGGESTIONS
 
 # Download required NLTK resources
 nltk.download('punkt')
@@ -70,13 +68,7 @@ def nlp_enhancer(kbtemplate_prompt, regex_prompt):
     optimized_prompt = kbtemplate_prompt
     format_words = result["format_words"]
 
-    preserved_format_terms = set()
-    for fmt in format_words:
-        fmt_lower = fmt.lower()
-        if fmt_lower in FORMAT_SUGGESTIONS:
-            suggestion = FORMAT_SUGGESTIONS[fmt_lower]
-            optimized_prompt = re.sub(rf"\b{re.escape(fmt)}\b", suggestion, optimized_prompt, flags=re.IGNORECASE)
-            preserved_format_terms.update(suggestion.lower().split())
+    preserved_format_terms = set(format_words)
 
     # Step 1: Replace synonyms but preserve format suggestion terms
     synonym_replaced = replace_synonyms(optimized_prompt, preserved_format_terms)
