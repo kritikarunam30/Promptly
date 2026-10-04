@@ -1,80 +1,43 @@
-import nltk
-import language_tool_python
-from nltk.corpus import wordnet as wn
+import re
 
-# Download required NLTK resources
-nltk.download('punkt')
-nltk.download('punkt_tab')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('averaged_perceptron_tagger_eng')
-nltk.download('wordnet')
+# Curated, meaning-preserving rewrites. Each entry only tightens wording
+# (informal intensifier -> standard one, wordy phrase -> shorter one); no entry
+# swaps a content word for a "synonym", which is what used to turn
+# "unique" into "alone" and "jargon" into "slang".
+PHRASE_TABLE = {
+    "super technical": "highly technical",
+    "super detailed": "highly detailed",
+    "super creative": "highly creative",
+    "super simple": "very simple",
+    "super short": "very short",
+    "super long": "very long",
+    "super easy": "very easy",
+    "super clear": "very clear",
+    "in order to": "to",
+    "due to the fact that": "because",
+    "at this point in time": "now",
+}
 
-tool = language_tool_python.LanguageTool('en-US')
-
-def get_wordnet_pos(treebank_tag):
-    if treebank_tag.startswith('J'):
-        return wn.ADJ
-    elif treebank_tag.startswith('V'):
-        return wn.VERB
-    elif treebank_tag.startswith('N'):
-        return wn.NOUN
-    elif treebank_tag.startswith('R'):
-        return wn.ADV
-    else:
-        return None
-
-def is_simple_word(word):
-    """Avoid long or complex synonyms"""
-    return word.isalpha() and len(word) <= 10 and '_' not in word
-
-def replace_synonyms(text, preserve_words):
-    words = nltk.word_tokenize(text)
-    tagged = nltk.pos_tag(words)
-    new_words = []
-
-    for word, tag in tagged:
-        lower_word = word.lower()
-        if lower_word in preserve_words or not word.isalpha():
-            new_words.append(word)
-            continue
-
-        wn_tag = get_wordnet_pos(tag)
-        if wn_tag:
-            synsets = wn.synsets(lower_word, pos=wn_tag)
-            if synsets:
-                lemmas = synsets[0].lemmas()
-                for lemma in lemmas:
-                    synonym = lemma.name().replace('_', ' ')
-                    # Skip long or uncommon synonyms
-                    if (
-                        synonym.lower() != lower_word
-                        and is_simple_word(synonym)
-                        and len(synonym) <= len(lower_word) + 2
-                    ):
-                        new_words.append(synonym if word.islower() else synonym.capitalize())
-                        break
-                else:
-                    new_words.append(word)
-            else:
-                new_words.append(word)
-        else:
-            new_words.append(word)
-
-    return ' '.join(new_words)
+_PATTERN = re.compile(
+    r"\b(" + "|".join(re.escape(k) for k in sorted(PHRASE_TABLE, key=len, reverse=True)) + r")\b",
+    re.IGNORECASE,
+)
 
 
-def nlp_enhancer(kbtemplate_prompt, regex_prompt):
-    result = regex_prompt
-    optimized_prompt = kbtemplate_prompt
-    format_words = result["format_words"]
+def apply_phrase_table(text):
+    """Return (new_text, [(old, new), ...]) for every phrase that was rewritten."""
+    changes = []
 
-    preserved_format_terms = set(format_words)
+    def swap(m):
+        replacement = PHRASE_TABLE[m.group(0).lower()]
+        if m.group(0)[0].isupper():
+            replacement = replacement[0].upper() + replacement[1:]
+        changes.append((m.group(0), replacement))
+        return replacement
 
-    # Step 1: Replace synonyms but preserve format suggestion terms
-    synonym_replaced = replace_synonyms(optimized_prompt, preserved_format_terms)
+    return _PATTERN.sub(swap, text), changes
 
-    # Step 2: Grammar check
-    corrected = tool.correct(synonym_replaced)
 
-    return corrected
-
+def nlp_enhancer(kbtemplate_prompt, regex_prompt=None):
+    enhanced, _ = apply_phrase_table(kbtemplate_prompt)
+    return enhanced

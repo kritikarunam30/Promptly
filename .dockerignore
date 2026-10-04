@@ -1,0 +1,22 @@
+# Not needed inside the image
+.git/
+.gitignore
+.gitattributes
+.dockerignore
+__pycache__/
+*.py[cod]
+.pytest_cache/
+venv/
+.venv/
+tests/
+requirements-dev.txt
+.vscode/
+.idea/
+*.log
+
+# Secrets: pass them at runtime with -e or --env-file
+.env
+.env.*
+
+# Personal notes
+deployment_steps.md

@@ -1,10 +1,11 @@
+import os
 import re
 from json import load
 from regex_helper.intent_file import intent_words
 from regex_helper.format  import content_formats
 
 # Load slang dictionary
-with open("regex_helper/slang_dict.json", "r") as f:
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "slang_dict.json"), "r") as f:
     slang_dict = load(f)
 
 # Define the prompt type optimizer classes
@@ -18,8 +19,9 @@ class Question(PromptOptimizer):
 
 class Command(PromptOptimizer):
     def optimize(self, text: str) -> str:
-        if not re.search(r"\bplease\b", text, re.IGNORECASE):
-            text = text.rstrip('.!?') + "."
+        # Keep an existing "!" or "?"; only add a full stop when the sentence has no end mark
+        if not re.search(r'[.?!]$', text):
+            text += "."
         return text
 
 class Greeting(PromptOptimizer):
@@ -31,8 +33,11 @@ class Greeting(PromptOptimizer):
         # Capitalize first word
         parts[0] = parts[0].capitalize()
 
-        # Rebuild sentence
-        greeting_part = parts[0] + ',' if len(parts) > 1 else parts[0] + '!'
+        # Rebuild sentence; "Good morning" stays together instead of becoming "Good, morning"
+        if len(parts) > 1 and parts[0].lower() == "good":
+            parts = [parts[0] + ' ' + parts[1]] + parts[2:]
+        word = parts[0].rstrip(',!')
+        greeting_part = word + ',' if len(parts) > 1 else word + '!'
         rest = ' '.join(parts[1:]) if len(parts) > 1 else ''
 
         # Add exclamation at the end
@@ -57,8 +62,8 @@ class QuestionWithCommand(PromptOptimizer):
         if not text:
             return text
 
-        # Capitalize the first character
-        text = text.capitalize()
+        # Capitalize the first character only, so names and acronyms keep their case
+        text = text[0].upper() + text[1:]
 
         # Ensure it ends with a question mark
         text = text.rstrip(".!?") + "?"
@@ -75,12 +80,19 @@ class NoKnownCategory(PromptOptimizer):
 # Helper functions
 def normalize_slang(text, slang_dict):
     pattern = re.compile(r'\b(' + '|'.join(re.escape(k) for k in slang_dict.keys()) + r')\b', re.IGNORECASE)
-    return pattern.sub(lambda m: slang_dict[m.group().lower()], text)
+
+    def expand(m):
+        replacement = slang_dict[m.group().lower()]
+        return replacement[0].upper() + replacement[1:] if m.group()[0].isupper() else replacement
+    return pattern.sub(expand, text)
 
 def clean_prompt(sentence):
     clean_word = re.sub(r"\s+", " ", sentence)
     clean_word = re.sub(r'([.,!?])\1+', r'\1', clean_word)
-    return clean_word.strip().capitalize()
+    clean_word = re.sub(r'\s+([.,!?;:])', r'\1', clean_word)
+    clean_word = clean_word.strip()
+    # Only the first letter changes; str.capitalize() would lowercase "Earth" or "AI"
+    return clean_word[:1].upper() + clean_word[1:]
 
 
 def prompt_type(text):
@@ -125,6 +137,39 @@ def prompt_type(text):
     else:
         return "None"
 
+
+GREETINGS = ("hi", "hello", "hey", "greetings", "yo", "good morning", "good evening", "good afternoon")
+WH_WORDS = ("how", "what", "why", "where", "when", "who", "whom", "whose", "which")
+AUX_WORDS = ("can", "could", "should", "would", "will", "is", "are", "was", "were", "does", "did", "may", "might", "shall", "am")
+
+def sentence_type(sentence):
+    """Classify one sentence by its shape rather than by keywords anywhere in it."""
+    words = re.findall(r"[\w']+", sentence.lower())
+    greeting = False
+    for g in GREETINGS:
+        g_words = g.split()
+        if words[:len(g_words)] == g_words:
+            greeting = True
+            words = words[len(g_words):]
+            break
+    first = words[0] if words else ""
+    second = words[1] if len(words) > 1 else ""
+    question = (
+        sentence.rstrip().endswith("?")
+        or first in WH_WORDS
+        or first in AUX_WORDS
+        # "Do you know..." is a question, "Do it now" is a command
+        or (first == "do" and second in ("you", "we", "they", "i"))
+    )
+    if greeting and question:
+        return "QuestionWithGreeting"
+    if greeting and words:
+        return "CommandWithGreeting"
+    if greeting:
+        return "Greeting"
+    if question:
+        return "Question"
+    return "Command"
 
 # Optimizer router
 def get_optimizer_class(prompt_type_str):
@@ -174,13 +219,18 @@ def extract_format_words(text):
          
     }
 
+def split_sentences(text):
+    return [s for s in re.split(r'(?<=[.!?])\s+', text.strip()) if s]
+
 def process_prompt(sentence: str):
     cleaned_input = clean_prompt(sentence)
     normalized = normalize_slang(sentence, slang_dict)
     cleaned = clean_prompt(normalized)
     ptype = prompt_type(cleaned)
-    optimizer = get_optimizer_class(ptype)
-    optimized = optimizer.optimize(cleaned)
+    # Fix end punctuation sentence by sentence so every sentence of the prompt is kept
+    optimized = ' '.join(
+        get_optimizer_class(sentence_type(s)).optimize(s) for s in split_sentences(cleaned)
+    )
     capitalized = capitalize_after_punctuation(optimized)
 
     return {

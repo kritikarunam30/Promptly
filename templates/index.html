@@ -14,11 +14,14 @@
                     <h4 style="font-family: 'Bahnschrift', sans-serif; font-weight: bold;">Enter your Prompt Here</h4>
                 </div>
                 <div class="card-body">
-                    <input type="text" id="initial_prompt" name="initial_prompt" 
-                    placeholder="Maximum 150 characters"
-                    maxlength="150"
+                    {% if error %}
+                        <div class="alert alert-danger" role="alert">{{ error }}</div>
+                    {% endif %}
+                    <textarea id="initial_prompt" name="initial_prompt" required
+                    placeholder="Maximum {{ max_chars }} characters"
+                    maxlength="{{ max_chars }}"
                     class="form-control"
-                    style="width: 100%; height: 100px; font-size: 1.2rem;"><br>
+                    style="width: 100%; height: 160px; font-size: 1.2rem;">{{ initial_prompt }}</textarea><br>
                     <input type="submit" value="Submit" class="btn btn-primary">
                 </div>
             </div>
@@ -34,7 +37,8 @@
                     {% for key,value in final_optimised_prompt.items() %}
                         {% if key == "Optimized Prompt" %}
                             <ul class="para">
-                                <li>{{ key }} : {{ value }}</li>
+                                <li style="white-space: pre-line;">{{ key }} :
+{{ value }}</li>
                             </ul>     
                         {% else %}  
                             <ul style="text-align: left;">
@@ -42,8 +46,16 @@
                             </ul> 
                         {% endif %}
                     {% endfor %}
+                    {% for note in notes %}
+                        <ul style="text-align: left;">
+                            <li>Safeguard : {{ note }}</li>
+                        </ul>
+                    {% endfor %}
                 </p>
-                <a href="/result" class="btn btn-primary">Get Result</a>
+                <form method="post" action="/result">
+                    <textarea name="prompt" hidden>{{ optimized_prompt }}</textarea>
+                    <input type="submit" value="Get Result" class="btn btn-primary">
+                </form>
             </div>
         </div>   
     {% endif %}      

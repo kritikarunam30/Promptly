@@ -1,7 +1,5 @@
 CUSTOM_FIXES = {
     "ai": "AI",
-    "Ai": "AI",
-    "AI": "AI",
     "plz": "please",
     "pls": "please",
     "world wal 2": "World War 2",
@@ -22,7 +20,6 @@ CUSTOM_FIXES = {
     "shoul": "should",
     "slov": "solve",
     "cn": "can",
-    "pls": "please",
     "recieve": "receive",
     "definately": "definitely",
     "teh": "the",
